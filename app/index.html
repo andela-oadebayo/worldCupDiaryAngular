@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html ng-app="worldCupApp">
+  <head>
+    <title>.:WorldCup Diary:.</title>
+    <link rel="stylesheet" href="./css/vendor/bootstrap.css">
+    <link rel="stylesheet" href="./css/custom/style.css">
+    <script src="js/vendor/jquery.js"></script>
+    <script src="js/vendor/angular.js"></script>
+    <script src="js/vendor/angular-route.js"></script>
+    <script src="js/custom/controller.js"></script>  
+  </head>
+
+  <body ng-controller="WorldCupController">
+    <div id="container" >
+      <div class="empty"></div>
+      <header>
+        <h1>WorldCup Diary</h1>
+        <h3>All the information about the world cup...</h3>
+        <ul class="logo">
+          <a href="#/country"><li ng-click="getCountries()">Countries</li></a>
+          <a href="#/matches"><li ng-click="getMatches()">Matches</li></a>
+        </ul>
+      </header>
+      <div ng-view></div>
+    </div>  
+  </body>
+</html>
