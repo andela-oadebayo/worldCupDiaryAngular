@@ -1,0 +1,10 @@
+<div class = "container">
+  <div ng-repeat="country in countries" class="col-md-3">
+    <li>
+      <p><img src="{{country.logo}}"></p>
+      <a href="#/players" ng-click="getPlayers($event)">Players</a>
+      <p ng-model='name'>{{country.name}}</p>
+      <p>Group: {{country.group}}</p>
+    </li>
+  </div> 
+</div>
