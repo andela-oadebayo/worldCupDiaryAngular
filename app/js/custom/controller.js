@@ -1,111 +1,62 @@
-'Use Strict';
-// //Declaring the module
-// var worldCupApp = angular.module('worldCupApp', ['ngRoute']);
-
-// //Creating the controller
-// var WorldCupController = worldCupApp.controller;
-// worldCupApp.controller('WorldCupController', ['$scope', '$http', function($scope, $http){
-
-//   //Function to get all Countries at the worldcup
-//   $scope.getCountries = function(){
-//     $http({method: "get",
-//             url: "http://worldcup.kimonolabs.com/api/teams?apikey=f0rt5uSfHOFwGCbA18wh48xRUFbCtr81",
-//             params: { sort: "group,1"} }).success(function(data){
-//       $scope.countries = data;
-//       console.log(data);
-//     });
-//   };
-// }]);
-
-// worldCupApp.controller('WorldCupPlayerController', ['$scope', '$http', function($scope, $http, $controller){
-// //function to get all Players per 
-// $controller('WorldCupController', {$scope:$scope});
-// $scope.getPlayers = function($event){
-//   var ele = $event.target;
-//   var countryName = angular.element(ele).next().text();
-//   console.log('Should display country name:' + ele);
-//   $http({method: "get",
-//           url: "http://worldcup.kimonolabs.com/api/players?apikey=f0rt5uSfHOFwGCbA18wh48xRUFbCtr81",
-//           params: { nationality: countryName } })
-//   .success(function(data){
-//       $scope.countryPlayers = data;
-//       console.log($scope.countryPlayers);
-//   });
-// };
-// }]);
-
-
-
-// //Creating Route for the App
-// worldCupApp.config(function ($routeProvider){
-//   $routeProvider
-//     .when('/players',
-//       {
-//         controller: 'WorldCupPlayerController',
-//         templateUrl: 'partials/players.html'
-//       })
-//     .when('/country',
-//       {
-//         controller: 'WorldCupController',
-//         templateUrl: 'partials/country.html'
-//       });
-//     // $locationProvider.html5Mode(true); //activate HTML5 Mode
-//     //.otherwise({redirectTo: '/partials/country'})
-// });
-
+'use strict';
+//Create a sand module and chain the routes config to it
 var worldCupApp = angular.module('worldCupApp', ['ngRoute'])
-  .config(['$routeProvider', function($routeProvider){
-    $routeProvider
-      .when('/country', {
-        templateUrl: 'partials/country.html',
-        controller: 'WorldCupCountryController'
-      })
-      .when('/players', {
-        templateUrl: 'partials/players.html',
-        controller: 'WorldCupCountryController'
-      });
-  }])
-  .controller('WorldCupCountryController', ['$scope', '$http', function($scope, $http){
-      //Function to get all Countries at the worldcup
-      $scope.getCountries = function(){
-        $http({method: "get",
-          url: "http://worldcup.kimonolabs.com/api/teams?apikey=f0rt5uSfHOFwGCbA18wh48xRUFbCtr81",
-          params: { sort: "group,1"} 
-        })
-        .success(function(data){
-          $scope.countries = data;
-          console.log(data);
-        })
-      };
+.config(['$routeProvider', function($routeProvider){
+  $routeProvider
+    .when('/country', {
+      templateUrl: 'partials/country.html',
+      controller: 'WorldCupController'
+    })
+    .when('/players', {
+      templateUrl: 'partials/players.html',
+      controller: 'WorldCupController'
+    });
+}]);
 
-    //function to get all Players per 
-    $scope.getPlayers = function($event){
-      var ele = $event.target;
-      var countryName = angular.element(ele).next().text();
-      console.log('Should display country name:' + ele);
-      $http({method: "get",
-        url: "http://worldcup.kimonolabs.com/api/players?apikey=f0rt5uSfHOFwGCbA18wh48xRUFbCtr81",
-        params: { nationality: countryName } 
-      })
-      .success(function(data){
-        $scope.countryPlayers = data;
-        console.log($scope.countryPlayers);
-      });
-    };
-  }])
-  .controller('WorldCupPlayerController', ['$scope', '$http', function($scope, $http){
-    // //function to get all Players per 
-    // $scope.getPlayers = function($event){
-    //   var ele = $event.target;
-    //   var countryName = angular.element(ele).next().text();
-    //   console.log('Should display country name:' + ele);
-    //   $http({method: "get",
-    //     url: "http://worldcup.kimonolabs.com/api/players?apikey=f0rt5uSfHOFwGCbA18wh48xRUFbCtr81",
-    //     params: { nationality: countryName } 
-    //   })
-    //   .success(function(data){
-    //     $scope.countryPlayers = data;
-    //     console.log($scope.countryPlayers);
-    //   });
-    // };
-  }]);
+//Create a factory to return the API url to retrieve countries
+worldCupApp.factory('countryFactory',['$http', function(http){
+  var  getCountries = function(){
+    return http({
+      method: "get",
+      url: "http://worldcup.kimonolabs.com/api/teams?apikey=f0rt5uSfHOFwGCbA18wh48xRUFbCtr81",
+      params: { sort: "group,1"}   
+    });
+  };
+  return getCountries;
+}]);
+//Create a factory to return the API url to retrieve player per country
+worldCupApp.factory('playerFactory', ['$http', function(http){
+  var getPlayers =  function(query){
+    return http({
+      method: "get",
+      url: "http://worldcup.kimonolabs.com/api/players?apikey=f0rt5uSfHOFwGCbA18wh48xRUFbCtr81",
+      params: { nationality: query} 
+    });
+  };
+  return getPlayers;
+}]);
+
+//Create controller and inject the factories into it
+worldCupApp.controller('WorldCupController', function($scope, countryFactory,playerFactory){
+  //this function is run on click of the the Country link
+  $scope.getCountries = function(){ 
+    countryFactory().success(function(data){
+      $scope.countries = data;
+      console.log($scope.countries);
+    });
+  }; 
+
+  //this function is run on click of the the Player link
+  $scope.getPlayers = function($event){
+    var ele = $event.target;
+    var countryName = angular.element(ele).next().text();
+    console.log('Should display country name:' +countryName);
+    playerFactory(countryName).success(function(data){
+      $scope.players = data;
+      console.log($scope.players);
+      console.log($scope.players.firstName);
+
+    });
+  };
+});
+

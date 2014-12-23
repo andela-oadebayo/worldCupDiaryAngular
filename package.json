@@ -11,5 +11,10 @@
     "url": " http://andela-oadebayo.github.io/worldcupdiary2014/"
   },
   "author": "Adebayo Oluwadamilola",
-  "license": "ISC"
+  "license": "ISC",
+
+  "scripts": {
+   "karma-init" : "node node_modules/karma/bin/karma init",
+   "karma-start" : "node node_modules/karma/bin/karma start test/karma.conf.js"
+ }
 }

@@ -1,7 +1,8 @@
 <div class = "container">
-  <div ng-repeat="player in countryPlayers" class="col-md-3">
-    <li>b b h hjv hv g vgvn vgcvv hv  gjhj
-      <p>{{player.firstName}}</p>
-    </li>
+  <div class="col-md-3">
+    <ul>
+      <li ng-repeat="player in players">{{player.firstName}}</li>
+    </ul>
   </div> 
 </div>
+
